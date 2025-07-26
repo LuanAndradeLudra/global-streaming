@@ -1,0 +1,53 @@
+.
+├── app.js
+├── commitlint.config.js
+├── jest.config.js
+├── package.json
+├── package-lock.json
+├── prisma
+│   ├── migrations
+│   │   ├── 20250726190737_init
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── readME.md
+├── src
+│   ├── app.ts
+│   ├── config
+│   │   └── swagger.ts
+│   ├── core
+│   │   ├── dto
+│   │   │   ├── auth
+│   │   │   └── user
+│   │   ├── errors
+│   │   │   └── AppError.ts
+│   │   └── interfaces
+│   │       ├── IAuthManager.ts
+│   │       ├── IDatabaseManager.ts
+│   │       └── IDatabaseRepository.ts
+│   ├── domain
+│   ├── infra
+│   │   ├── repositories
+│   │   │   └── UserRepository.ts
+│   │   ├── services
+│   │   └── validators
+│   │       ├── LoginUserSchema.ts
+│   │       └── RegisterUserSchema.ts
+│   ├── middlewares
+│   │   ├── errorHandler.ts
+│   │   └── validate.ts
+│   ├── routes
+│   │   └── authRoutes.ts
+│   ├── server.ts
+│   └── usecases
+│       ├── auth
+│       │   ├── AuthController.ts
+│       │   └── AuthManager.ts
+│       └── user
+│           ├── UserController.ts
+│           └── UserManager.ts
+├── structure.txt
+├── tsconfig.json
+└── utils
+
+22 directories, 28 files
