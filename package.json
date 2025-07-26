@@ -15,7 +15,9 @@
     "generate": "npx prisma generate",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",

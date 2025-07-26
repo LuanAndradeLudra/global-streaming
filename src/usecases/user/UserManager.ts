@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { IDatabaseManager } from '../../core/interfaces/managers/IDatabaseManager';
 import { RegisterUserDto } from '../../core/dto/auth/RegisterUserDto';
-import { UserRepository } from '../../infra/repositories/UserRepository';
+import { UserRepository } from '../../infra/repositories/user/UserRepository';
 
 /**
  * Manager responsible for user-related logic and persistence delegation.

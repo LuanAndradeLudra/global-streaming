@@ -1,11 +1,10 @@
-import { PrismaClient, User } from '@prisma/client';
-import { IDatabaseRepository } from '../../core/interfaces/repositories/IDatabaseRepository';
-import { RegisterUserDto } from '../../core/dto/auth/RegisterUserDto';
-
-const prisma = new PrismaClient();
+import { User } from '@prisma/client';
+import { prisma } from '../../../lib/prisma/prisma';
+import { IDatabaseRepository } from '../../../core/interfaces/repositories/IDatabaseRepository';
+import { RegisterUserDto } from '../../../core/dto/auth/RegisterUserDto';
 
 /**
- * Repository for User model operations.
+ * Repository implementation for managing User data with Prisma.
  */
 export class UserRepository implements IDatabaseRepository<User, RegisterUserDto> {
   async findById(id: number): Promise<User | null> {
@@ -29,6 +28,6 @@ export class UserRepository implements IDatabaseRepository<User, RegisterUserDto
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { email } });
+    return prisma.user.findFirst({ where: { email } });
   }
 }
