@@ -9,7 +9,7 @@ export class AuthController {
   register = async (req: Request, res: Response) => {
     try {
       const result = await authManager.register(req.body);
-      res.json(result);
+      res.status(201).json(result);
     } catch (err: any) {
       res.status(err.statusCode || 500).json({ error: err.message });
     }
