@@ -1,3 +1,4 @@
+// src/usecases/user/__tests__/UserManager.test.ts
 import { UserManager } from '../UserManager';
 import { UserRepository } from '../../../infra/repositories/user/UserRepository';
 import { RegisterUserDto } from '../../../core/dto/auth/RegisterUserDto';
@@ -5,7 +6,7 @@ import { User } from '@prisma/client';
 
 describe('UserManager', () => {
   let userManager: UserManager;
-  let repository: UserRepository;
+  let repository: jest.Mocked<UserRepository>;
 
   const mockUser: User = {
     id: 1,
@@ -16,7 +17,8 @@ describe('UserManager', () => {
 
   beforeEach(() => {
     userManager = new UserManager();
-    repository = (userManager as any).repository;
+    // @ts-ignore — acessa a propriedade privada para mock
+    repository = userManager['repository'] as jest.Mocked<UserRepository>;
   });
 
   describe('create', () => {
@@ -43,6 +45,7 @@ describe('UserManager', () => {
       const result = await userManager.findByEmail('john@example.com');
 
       expect(result).toEqual(mockUser);
+      expect(repository.findByEmail).toHaveBeenCalledWith('john@example.com');
     });
 
     it('should return null if user not found', async () => {
@@ -51,6 +54,7 @@ describe('UserManager', () => {
       const result = await userManager.findByEmail('nonexistent@example.com');
 
       expect(result).toBeNull();
+      expect(repository.findByEmail).toHaveBeenCalledWith('nonexistent@example.com');
     });
   });
 
@@ -61,6 +65,7 @@ describe('UserManager', () => {
       const result = await userManager.findById(1);
 
       expect(result).toEqual(mockUser);
+      expect(repository.findById).toHaveBeenCalledWith(1);
     });
 
     it('should return null if user not found', async () => {
@@ -69,6 +74,7 @@ describe('UserManager', () => {
       const result = await userManager.findById(999);
 
       expect(result).toBeNull();
+      expect(repository.findById).toHaveBeenCalledWith(999);
     });
   });
 
@@ -79,13 +85,13 @@ describe('UserManager', () => {
       const result = await userManager.findAll();
 
       expect(result).toEqual([mockUser]);
+      expect(repository.findAll).toHaveBeenCalled();
     });
   });
 
   describe('update', () => {
     it('should update a user', async () => {
       const updatedUser: User = { ...mockUser, name: 'Updated' };
-
       jest.spyOn(repository, 'update').mockResolvedValue(updatedUser);
 
       const result = await userManager.update(1, { name: 'Updated' });

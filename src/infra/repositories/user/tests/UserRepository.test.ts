@@ -6,6 +6,8 @@ describe('UserRepository', () => {
   const repo = new UserRepository();
 
   beforeAll(async () => {
+    // first remove dependent settings, then users
+    await prisma.userSettings.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -13,18 +15,20 @@ describe('UserRepository', () => {
     await prisma.$disconnect();
   });
 
+  const userData: RegisterUserDto = {
+    name: 'Repo Test',
+    email: 'repo@example.com',
+    password: 'hashed_password',
+  };
+
+  let created: any;
+
   it('should create and find a user by email', async () => {
-    const data: RegisterUserDto = {
-      name: 'Repo Test',
-      email: 'repo@example.com',
-      password: 'hashed_password',
-    };
-
-    const created = await repo.create(data);
+    created = await repo.create(userData);
     expect(created).toHaveProperty('id');
-    expect(created.email).toBe('repo@example.com');
+    expect(created.email).toBe(userData.email);
 
-    const found = await repo.findByEmail('repo@example.com');
+    const found = await repo.findByEmail(userData.email);
     expect(found?.id).toBe(created.id);
   });
 
@@ -35,25 +39,18 @@ describe('UserRepository', () => {
   });
 
   it('should find a user by ID', async () => {
-    const user = await repo.findByEmail('repo@example.com');
-    expect(user).not.toBeNull();
-
-    const found = await repo.findById(user!.id);
-    expect(found?.email).toBe('repo@example.com');
+    const found = await repo.findById(created.id);
+    expect(found?.email).toBe(userData.email);
   });
 
   it('should update a user', async () => {
-    const user = await repo.findByEmail('repo@example.com');
-    const updated = await repo.update(user!.id, { name: 'Updated Repo' });
-
+    const updated = await repo.update(created.id, { name: 'Updated Repo' });
     expect(updated.name).toBe('Updated Repo');
   });
 
   it('should delete a user', async () => {
-    const user = await repo.findByEmail('repo@example.com');
-    await repo.delete(user!.id);
-
-    const deleted = await repo.findById(user!.id);
+    await repo.delete(created.id);
+    const deleted = await repo.findById(created.id);
     expect(deleted).toBeNull();
   });
 });

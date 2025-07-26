@@ -1,43 +1,45 @@
 import { Request, Response } from 'express';
 import { UserManager } from './UserManager';
-import { RegisterUserDto } from '../../infra/validators/RegisterUserDto';
-import { LoginUserDto } from '../../infra/validators/loginUserValidator';
+import { UserSettingsManager } from './settings/UserSettingsManager';
+import { UserResponseDto } from '../../core/dto/user/UserResponseDto';
 
 /**
  * Controller responsible for handling user-related HTTP requests.
  */
 export class UserController {
   private manager = new UserManager();
+  private settingsManager = new UserSettingsManager();
 
-  /**
-   * Handles user registration request.
-   * @param req Express request containing RegisterUserDto
-   * @param res Express response
-   */
-  register = async (req: Request, res: Response) => {
-    const payload: RegisterUserDto = req.body;
+  /** GET /api/users/me */
+  getMe = async (req: Request, res: Response) => {
+    const userId = req.user.id;
 
-    try {
-      const token = await this.manager.register(payload);
-      res.json({ token });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
+    const user = await this.manager.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
+
+    const { password, ...safeUser } = user;
+
+    const rawSettings = await this.settingsManager.findByUserId(userId);
+    if (!rawSettings) {
+      return res.json({ user: safeUser as UserResponseDto, settings: null });
+    }
+
+    const { userId: _, ...safeSettings } = rawSettings;
+
+    return res.json({
+      user: safeUser as UserResponseDto,
+      settings: safeSettings,
+    });
   };
 
-  /**
-   * Handles user login request.
-   * @param req Express request containing LoginUserDto
-   * @param res Express response
-   */
-  login = async (req: Request, res: Response) => {
-    const payload: LoginUserDto = req.body;
-
-    try {
-      const token = await this.manager.login(payload);
-      res.json({ token });
-    } catch (err: any) {
-      res.status(401).json({ error: err.message });
-    }
+  /** GET /api/users/:id */
+  getById = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const user = await this.manager.findById(id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const { password, ...safeUser } = user;
+    res.json(safeUser as UserResponseDto);
   };
 }

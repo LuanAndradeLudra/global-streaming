@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 
 // 🧩 Internal modules
 import { authRoutes } from './routes/authRoutes';
+import { userRoutes } from './routes/userRoutes';
 import { setupSwagger } from './config/swagger';
 import { errorHandler } from './middlewares/errorHandler';
 
@@ -41,6 +42,7 @@ if (isProduction) {
 
 // 📦 Rotas
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // 📄 Documentação Swagger
 setupSwagger(app);
