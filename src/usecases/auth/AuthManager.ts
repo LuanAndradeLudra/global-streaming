@@ -17,7 +17,7 @@ export class AuthManager implements IAuthManager {
   async register(data: RegisterUserDto): Promise<AuthResponseDto> {
     const existing = await this.userManager.findByEmail(data.email);
     if (existing) {
-      throw new AppError('E-mail já está em uso.', 400);
+      throw new AppError('Endereço de e-mail já cadastrado.', 400);
     }
 
     const hashed = await bcrypt.hash(data.password, 10);
