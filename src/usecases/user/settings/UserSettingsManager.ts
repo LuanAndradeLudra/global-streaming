@@ -36,20 +36,16 @@ export class UserSettingsManager
   }
 
   async upsertByUserId(
-    user_id: number,
-    data: UserSettingsDto
+    userId: number,
+    data: { userId: number; twitchChannel: string; kickChannel: string }
   ): Promise<UserSettings> {
-    const existing = await this.repository.findByUserId(user_id);
+    const existing = await this.repository.findByUserId(userId);
     if (existing) {
       return this.repository.update(existing.id, {
         twitchChannel: data.twitchChannel,
-        kickChannel: data.kickChannel,
+        kickChannel:   data.kickChannel,
       });
     }
-    return this.repository.create({
-      userId: user_id,
-      twitchChannel: data.twitchChannel,
-      kickChannel: data.kickChannel,
-    });
+    return this.repository.create(data);
   }
 }

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { UserManager } from './UserManager';
 import { UserSettingsManager } from './settings/UserSettingsManager';
-import { UserResponseDto } from '../../core/dto/user/UserResponseDto';
+import { UserDto } from '../../core/dto/user/UserDto';
 
 export class UserController {
   private manager = new UserManager();
@@ -19,10 +19,10 @@ export class UserController {
 
     const rawSettings = await this.settingsManager.findByUserId(userId);
     if (!rawSettings) {
-      return res.json({ user: safeUser as UserResponseDto, settings: null });
+      return res.json({ user: safeUser as UserDto, settings: null });
     }
     const { userId: _, ...safeSettings } = rawSettings;
-    res.json({ user: safeUser as UserResponseDto, settings: safeSettings });
+    res.json({ user: safeUser as UserDto, settings: safeSettings });
   };
 
   /** PUT /api/users/me */
@@ -40,7 +40,7 @@ export class UserController {
     try {
       const updatedUser = await this.manager.update(userId, updateData);
       const { password: _, ...safeUser } = updatedUser;
-      res.json(safeUser as UserResponseDto);
+      res.json(safeUser as UserDto);
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
@@ -54,6 +54,6 @@ export class UserController {
       return res.status(404).json({ error: 'User not found' });
     }
     const { password, ...safeUser } = user;
-    res.json(safeUser as UserResponseDto);
+    res.json(safeUser as UserDto);
   };
 }

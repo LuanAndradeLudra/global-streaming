@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { UserController } from '../usecases/user/UserController';
 import { UserSettingsController } from '../usecases//user/settings/UserSettingsController';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import { UpdateUserSettingsSchema } from '../infra/validators/UpdateUserValidator';
+import { validate } from '../middlewares/validate';
 
 const router = Router();
 const controller = new UserController();
@@ -83,7 +85,7 @@ router.put('/me', authMiddleware, controller.updateMe);
  *       401:
  *         description: Unauthorized – missing or invalid token
  */
-router.put('/me/settings', authMiddleware, userSettingsController.updateOwnSettings);
+router.put('/me/settings', authMiddleware, validate(UpdateUserSettingsSchema), userSettingsController.updateOwnSettings);
 
 
 /**
