@@ -1,7 +1,7 @@
 import { prisma } from '../../../../lib/prisma/prisma';
 import { UserSettings } from '@prisma/client';
 import { IDatabaseRepository } from '../../../../core/interfaces/repositories/IDatabaseRepository';
-import { UserSettingsDto } from '../../../../core/dto/user/settings/UserSettingsDto';
+import { UserSettingsDto } from '../../../../core/dto/user/UserDto';
 
 /**
  * Repository to handle database operations for UserSettings.
@@ -11,9 +11,9 @@ export class UserSettingsRepository implements IDatabaseRepository<UserSettings,
   async create(data: UserSettingsDto): Promise<UserSettings> {
     return prisma.userSettings.create({
       data: {
-        userId: data.user_id,
-        twitchChannel: data.twitch_channel,
-        kickChannel: data.kick_channel,
+        userId: data.userId,
+        twitchChannel: data.twitchChannel,
+        kickChannel: data.kickChannel,
       },
     });
   }

@@ -1,8 +1,7 @@
 import { UserSettings } from '@prisma/client';
 import { IDatabaseManager } from '../../../core/interfaces/managers/IDatabaseManager';
-import { UserSettingsDto } from '../../../core/dto/user/settings/UserSettingsDto';
 import { UserSettingsRepository } from '../../../infra/repositories/user/settings/UserSettingsRepository';
-import { UpdateUserSettingsDto } from '../../../core/dto/user/settings/UpdateUserSettingsDto';
+import { UserSettingsDto } from '../../../core/dto/user/UserDto';
 
 /**
  * Manager responsible for user settings logic and persistence.
@@ -38,19 +37,19 @@ export class UserSettingsManager
 
   async upsertByUserId(
     user_id: number,
-    data: UpdateUserSettingsDto
+    data: UserSettingsDto
   ): Promise<UserSettings> {
     const existing = await this.repository.findByUserId(user_id);
     if (existing) {
       return this.repository.update(existing.id, {
-        twitchChannel: data.twitch_channel,
-        kickChannel: data.kick_channel,
+        twitchChannel: data.twitchChannel,
+        kickChannel: data.kickChannel,
       });
     }
     return this.repository.create({
-      user_id,
-      twitch_channel: data.twitch_channel,
-      kick_channel: data.kick_channel,
+      userId: user_id,
+      twitchChannel: data.twitchChannel,
+      kickChannel: data.kickChannel,
     });
   }
 }

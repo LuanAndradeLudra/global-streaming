@@ -1,8 +1,7 @@
 import { UserSettingsManager } from '../UserSettingsManager';
 import { UserSettingsRepository } from '../../../../infra/repositories/user/settings/UserSettingsRepository';
 import { UserSettings } from '@prisma/client';
-import { UserSettingsDto } from '../../../../core/dto/user/settings/UserSettingsDto';
-import { UpdateUserSettingsDto } from '../../../../core/dto/user/settings/UpdateUserSettingsDto';
+import { UserSettingsDto } from '../../../../core/dto/user/UserDto';
 
 describe('UserSettingsManager', () => {
   let manager: UserSettingsManager;
@@ -23,9 +22,9 @@ describe('UserSettingsManager', () => {
 
   it('should create settings', async () => {
     const dto: UserSettingsDto = {
-      user_id: 1,
-      twitch_channel: 'twitch123',
-      kick_channel: 'kick123',
+      userId: 1,
+      twitchChannel: 'twitch123',
+      kickChannel: 'kick123',
     };
     jest.spyOn(repo, 'create').mockResolvedValue(sampleSettings);
 
@@ -71,10 +70,11 @@ describe('UserSettingsManager', () => {
 
   describe('upsertByUserId', () => {
     it('should update when exists', async () => {
-      const dto: UpdateUserSettingsDto = { twitch_channel: 'upT', kick_channel: 'upK' };
+      const dto: UserSettingsDto = { userId: 1, twitchChannel: 'upT', kickChannel: 'upK' };
       jest.spyOn(repo, 'findByUserId').mockResolvedValue(sampleSettings);
       jest.spyOn(repo, 'update').mockResolvedValue({
         ...sampleSettings,
+        userId: 1,
         twitchChannel: 'upT',
         kickChannel: 'upK',
       });
@@ -88,15 +88,15 @@ describe('UserSettingsManager', () => {
     });
 
     it('should create when not exists', async () => {
-      const dto: UpdateUserSettingsDto = { twitch_channel: 'newT', kick_channel: 'newK' };
+      const dto: UserSettingsDto = { userId: 1, twitchChannel: 'newT', kickChannel: 'newK' };
       jest.spyOn(repo, 'findByUserId').mockResolvedValue(null);
       jest.spyOn(repo, 'create').mockResolvedValue(sampleSettings);
 
       const result = await manager.upsertByUserId(1, dto);
       expect(repo.create).toHaveBeenCalledWith({
-        user_id: 1,
-        twitch_channel: 'newT',
-        kick_channel: 'newK',
+        userId: 1,
+        twitchChannel: 'newT',
+        kickChannel: 'newK',
       });
       expect(result).toEqual(sampleSettings);
     });

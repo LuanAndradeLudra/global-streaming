@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserSettingsManager } from '../settings/UserSettingsManager';
+import { UserSettingsManager } from './UserSettingsManager';
 import { UpdateUserSettingsDto } from '../../../core/dto/user/settings/UpdateUserSettingsDto';
 
 export class UserSettingsController {

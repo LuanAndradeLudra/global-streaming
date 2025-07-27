@@ -1,18 +1,11 @@
 import { Router } from 'express';
 import { UserController } from '../usecases/user/UserController';
-import { UserSettingsController } from '../usecases/user/settings/userSettingsController';
+import { UserSettingsController } from '../usecases//user/settings/UserSettingsController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = Router();
 const controller = new UserController();
 const userSettingsController = new UserSettingsController();
-
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: User operations and settings management
- */
 
 /**
  * @swagger
@@ -25,14 +18,44 @@ const userSettingsController = new UserSettingsController();
  *     responses:
  *       200:
  *         description: User and settings fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserWithSettings'
  *       401:
- *         description: Unauthorized - missing or invalid token
+ *         description: Unauthorized – missing or invalid token
  */
-router.get(
-  '/me',
-  authMiddleware,
-  controller.getMe
-);
+router.get('/me', authMiddleware, controller.getMe);
+
+router.get('/me', authMiddleware, controller.getMe);
+
+/**
+ * @swagger
+ * /api/users/me:
+ *   put:
+ *     summary: Update authenticated user’s profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUserRequest'
+ *     responses:
+ *       200:
+ *         description: User profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
+ *       400:
+ *         description: Bad request – invalid payload
+ *       401:
+ *         description: Unauthorized – missing or invalid token
+ */
+router.put('/me', authMiddleware, controller.updateMe);
 
 /**
  * @swagger
@@ -47,27 +70,21 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               twitch_channel:
- *                 type: string
- *                 description: The Twitch channel URL or name
- *               kick_channel:
- *                 type: string
- *                 description: The Kick channel URL or name
+ *             $ref: '#/components/schemas/UpdateSettingsRequest'
  *     responses:
  *       200:
  *         description: User settings updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SettingsResponse'
  *       400:
- *         description: Bad request - invalid payload
+ *         description: Bad request – invalid payload
  *       401:
- *         description: Unauthorized - missing or invalid token
+ *         description: Unauthorized – missing or invalid token
  */
-router.put(
-  '/me/settings',
-  authMiddleware,
-  userSettingsController.updateOwnSettings
-);
+router.put('/me/settings', authMiddleware, userSettingsController.updateOwnSettings);
+
 
 /**
  * @swagger
@@ -88,9 +105,6 @@ router.put(
  *       404:
  *         description: User not found
  */
-router.get(
-  '/:id',
-  controller.getById
-);
+router.get('/:id', controller.getById);
 
 export { router as userRoutes };

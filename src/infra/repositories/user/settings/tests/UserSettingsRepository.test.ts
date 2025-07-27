@@ -1,6 +1,6 @@
 import { prisma } from '../../../../../lib/prisma/prisma';
 import { UserSettingsRepository } from '../UserSettingsRepository';
-import { UserSettingsDto } from '../../../../../core/dto/user/settings/UserSettingsDto';
+import { UserSettingsDto } from '../../../../../core/dto/user/UserDto';
 
 jest.mock('../../../../../lib/prisma/prisma', () => ({
   prisma: {
@@ -17,9 +17,9 @@ jest.mock('../../../../../lib/prisma/prisma', () => ({
 describe('UserSettingsRepository', () => {
   const repo = new UserSettingsRepository();
   const sampleDto: UserSettingsDto = {
-    user_id: 1,
-    twitch_channel: 'twitch123',
-    kick_channel: 'kick123',
+    userId: 1,
+    twitchChannel: 'twitch123',
+    kickChannel: 'kick123',
   };
   const sampleModel = { id: 10, userId: 1, twitchChannel: 'twitch123', kickChannel: 'kick123' };
 
