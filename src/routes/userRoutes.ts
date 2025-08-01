@@ -29,8 +29,6 @@ const userSettingsController = new UserSettingsController();
  */
 router.get('/me', authMiddleware, controller.getMe);
 
-router.get('/me', authMiddleware, controller.getMe);
-
 /**
  * @swagger
  * /api/users/me:
@@ -107,6 +105,6 @@ router.put('/me/settings', authMiddleware, validate(UpdateUserSettingsSchema), u
  *       404:
  *         description: User not found
  */
-router.get('/:id', controller.getById);
+router.get('/:id', authMiddleware, controller.getById);
 
 export { router as userRoutes };
